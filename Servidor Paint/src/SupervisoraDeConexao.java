@@ -25,7 +25,6 @@ public class SupervisoraDeConexao extends Thread
 
     public void run ()
     {
-
         ObjectOutputStream transmissor;
         try
         {
@@ -74,46 +73,41 @@ public class SupervisoraDeConexao extends Thread
                 this.usuarios.add (this.usuario);
             }
 
-
             for(;;)
             {
                 Comunicado comunicado = this.usuario.envie ();
 
                 if (comunicado==null)
                     return;
-                else if (comunicado instanceof PedidoDeOperacao)
+                else if (comunicado instanceof PedidoDeSalvamento)
                 {
-					PedidoDeOperacao pedidoDeOperacao = (PedidoDeOperacao)comunicado;
+                    PedidoDeSalvamento pedidoDeSalvamento = (PedidoDeSalvamento)comunicado;
+                    
+                    pedidoDeSalvamento.getDesenho();
+                    
+                    System.out.println(pedidoDeSalvamento.toString());                    
 					
-					switch (pedidoDeOperacao.getOperacao())
-					{
-						case '+':
-						    this.valor += pedidoDeOperacao.getValor();
-						    break;
-						    
-						case '-':
-						    this.valor -= pedidoDeOperacao.getValor();
-						    break;
-						    
-						case '*':
-						    this.valor *= pedidoDeOperacao.getValor();
-						    break;
-						    
-						case '/':
-						    this.valor /= pedidoDeOperacao.getValor();
-                    }
+                    /*
+                    pegar do comunicado o vetor, nome do desenho, nome do cliente
+                    e mandar pro BD usando DAO e DBO
+                    enquanto isso, print o vetor na tela
+                    
+                    depois desconectar o usuario
+                    */
+
+                    //data criação, ultima atualização
+                    //nome do usuario, nome do desenho
                 }
-                else if (comunicado instanceof PedidoDeResultado)
+                else if (comunicado instanceof PedidoDeAbertura)
                 {
-                    this.usuario.receba (new Resultado (this.valor));
-                }
-                else if (comunicado instanceof PedidoParaSair)
-                {
-                    synchronized (this.usuarios)
-                    {
-                        this.usuarios.remove (this.usuario);
-                    }
-                    this.usuario.adeus();
+                    /*
+                    pegar do comunicado o nome do desenho e nome do cliente
+                    usar DAO e DBO para obter os dados
+                    preencher um objeto do tipo desenho
+                    e enviar pro cliente fazendo usuario.receba(desenho)
+                    
+                    depois desconectar o usuario
+                    */
                 }
             }
         }
