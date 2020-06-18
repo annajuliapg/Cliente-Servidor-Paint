@@ -3,8 +3,11 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.imageio.*;
 import java.io.*;
+import java.net.*;
+import java.text.*;
 import java.util.*;
-import javax.swing.filechooser.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import say.swing.JFontChooser;
 
  
@@ -1415,6 +1418,9 @@ public class Janela extends JFrame
                                                "Não há nada para salvar!",
                                                "Tela Limpa",
                                                JOptionPane.WARNING_MESSAGE);
+            } catch (IOException ex) 
+            {
+                Logger.getLogger(Janela.class.getName()).log(Level.SEVERE, null, ex);
             }
             
             statusBar1.setText("Dica: clique no botão do que deseja desenhar");         
@@ -1457,143 +1463,210 @@ public class Janela extends JFrame
               
             esperaInicioTexto         = false;
             
-            Abrir();
+            try 
+            {
+                Abrir();
+            } 
+            catch (IOException ex) 
+            {
+                Logger.getLogger(Janela.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     
-    public void Salvar() throws ArrayIndexOutOfBoundsException
+    public void Salvar() throws ArrayIndexOutOfBoundsException, IOException
     {
-       if(figuras.isEmpty()) throw new ArrayIndexOutOfBoundsException ("Sem desenho na tela");  
+       if(figuras.isEmpty()) throw new ArrayIndexOutOfBoundsException ("Sem desenho na tela");
         
-       JFileChooser chooser = new JFileChooser();
-    
-       FileNameExtensionFilter filter = new FileNameExtensionFilter("Paint Files", "paint", ".paint");
-    
-       chooser.setFileFilter(filter);
-               
-       int returnVal = chooser.showSaveDialog(Janela.this);
+        //fazer conexão do cliente
+        
+        try
+        {
+        
+            Socket conexao = new Socket ("localhost", 3000);
 
-       if(returnVal == JFileChooser.APPROVE_OPTION) 
-       {           
-           try
-           {
-            String arquivo = chooser.getSelectedFile().getPath();
-            
-            String nomeArquivo = chooser.getSelectedFile().getName();
-            
-            if(!arquivo.endsWith(".paint"))
-                arquivo+=".paint";
-            
-            File teste = new File (arquivo);
-            
-            int resposta = 0; //sim = 0 não = 1
-                        
-            if(teste.exists())
+            ObjectOutputStream transmissor = null;
+            try
             {
-                resposta = JOptionPane.showConfirmDialog(null, "Deseja substituí-lo?", "Esse nome de arquivo já existe", JOptionPane.YES_NO_OPTION);
-            }            
-            
-            if (resposta == 0) // caso sim o arquivo é salvo
+               transmissor =
+                new ObjectOutputStream(
+                conexao.getOutputStream());
+            }
+            catch (Exception erro)
             {
-                PrintWriter arq = new PrintWriter (new FileWriter (arquivo));
-                
-                for (Figura f : this.figuras)
-                     arq.println (f);
+                System.err.println ("Indique o servidor e a porta corretos!\n");
+                return;
+            }
 
-                arq.close();
-                
-                JOptionPane.showMessageDialog (null,
-                                               "Desenho salvo como: " + nomeArquivo + ".paint",
-                                               "Salvo",
-                                               JOptionPane.INFORMATION_MESSAGE);
-                
-            }
-            else
+            ObjectInputStream receptor = null;
+            try
             {
-                JOptionPane.showMessageDialog (null,
-                                               "Desenho não salvo, tente novamente com outro nome",
-                                               "Atenção",
-                                               JOptionPane.WARNING_MESSAGE);
+                receptor =
+                new ObjectInputStream(
+                conexao.getInputStream());
             }
-            
-           }
-           catch (Exception e)
-           {
-                e.printStackTrace();
-           }
+            catch (Exception erro)
+            {
+                System.err.println ("Indique o servidor e a porta corretos!\n");
+                return;
+            }
+
+            Parceiro servidor = null ;
+            try
+            {
+                servidor = new Parceiro (conexao, receptor, transmissor);
+            }
+            catch (Exception erro)
+            {
+                System.err.println ("Indique o servidor e a porta corretos!\n");
+                return;
+            }
+            //conexão feita
+
+               try
+               {    
+                    String nomeDesenho = JOptionPane.showInputDialog(null, "Nome:", "Digite o nome do desenho", JOptionPane.PLAIN_MESSAGE);
+
+                    Date data = new Date();
+
+                    String dataString = java.text.DateFormat.getDateInstance(DateFormat.MEDIUM).format(data);
+
+                    Desenho d = new Desenho (nomeDesenho, dataString, dataString);               
+
+                    for (Figura f : this.figuras)
+                        d.addFigura (f.toString());
+
+                    servidor.receba(d);
+                    servidor.adeus();
+
+                    JOptionPane.showMessageDialog (null,
+                                                   "Desenho salvo como: " + nomeDesenho,
+                                                   "Salvo",
+                                                   JOptionPane.INFORMATION_MESSAGE);
+
+                    System.out.println(d.toString()+"\n");
+
+               }
+               catch (Exception e)
+               {
+                    e.printStackTrace();
+               }
+        }
+        catch(ConnectException e)
+        {           
+           JOptionPane.showMessageDialog (null,
+                                          "O servidor está desligado. Tente novamente mais tarde.",
+                                           "Servidor OFF",
+                                           JOptionPane.INFORMATION_MESSAGE);
         }
     }
     
-    public void Abrir()
+    public void Abrir() throws IOException
     {
-       JFileChooser chooser = new JFileChooser();
-    
-       FileNameExtensionFilter filter = new FileNameExtensionFilter("Paint Files", "paint", ".paint");
-    
-       chooser.setFileFilter(filter);
-    
-       int returnVal = chooser.showOpenDialog(Janela.this);
-       
-       if(returnVal == JFileChooser.APPROVE_OPTION) 
-       {
-          try
-          {
-            String arquivo = chooser.getSelectedFile().getPath();
-            
-            BufferedReader arq = new BufferedReader (new FileReader (arquivo));
-            
+       //fazer conxão do cliente
+        
+       Socket conexao = new Socket ("localhost", 3000);
+        
+        ObjectOutputStream transmissor = null;
+        try
+        {
+           transmissor =
+            new ObjectOutputStream(
+            conexao.getOutputStream());
+        }
+        catch (Exception erro)
+        {
+            System.err.println ("Indique o servidor e a porta corretos!\n");
+            return;
+        }
+
+        ObjectInputStream receptor = null;
+        try
+        {
+            receptor =
+            new ObjectInputStream(
+            conexao.getInputStream());
+        }
+        catch (Exception erro)
+        {
+            System.err.println ("Indique o servidor e a porta corretos!\n");
+            return;
+        }
+
+        Parceiro servidor = null ;
+        try
+        {
+            servidor = new Parceiro (conexao, receptor, transmissor);
+        }
+        catch (Exception erro)
+        {
+            System.err.println ("Indique o servidor e a porta corretos!\n");
+            return;
+        }        
+        
+        //conexão feita
+          
+        try
+        {
             this.figuras.clear();
             
             repaint();
             
-                while (arq.ready())
-                {
-                    String linhaTexto = arq.readLine();
+            //PedidoDeAbertura pda = new PedidoDeAbertura (nome do desenho, identificacao do cliente);
+            //servidor.receba (pda);
+            //Desenho d = (Desenho)servidor.envie();
+            
+                //fazer um loop - quant desenho
+                    //String s = d.pegaDesenho(i);
+                    String s = null;
 
-                    switch (linhaTexto.charAt(0))
+                    switch (s.charAt(0))
                     {
                         case 'p': 
-                        this.figuras.add (new Ponto (linhaTexto));
+                        this.figuras.add (new Ponto (s));
                         break;
 
                         case 'l': 
-                        this.figuras.add (new Linha (linhaTexto));
+                        this.figuras.add (new Linha (s));
                         break;
                         
                         case 'c':
-                        this.figuras.add(new Circulo (linhaTexto));
+                        this.figuras.add(new Circulo (s));
                         break;
                         
                         case 'e':
-                        this.figuras.add(new Elipse (linhaTexto));
+                        this.figuras.add(new Elipse (s));
                         break;
                         
                         case 'q':
-                        this.figuras.add(new Quadrado (linhaTexto));
+                        this.figuras.add(new Quadrado (s));
                         break;
                         
                         case 'r':
-                        this.figuras.add(new Retangulo (linhaTexto));
+                        this.figuras.add(new Retangulo (s));
                         break;
                         
                         case 'g':
-                        this.figuras.add(new Poligono (linhaTexto));
+                        this.figuras.add(new Poligono (s));
                         break;
                         
                         case 't':
-                        this.figuras.add(new Texto (linhaTexto));
+                        this.figuras.add(new Texto (s));
                         break;
                     }
 
                     this.figuras.get (this.figuras.size()-1).torneSeVisivel(pnlDesenho.getGraphics());
-                }
+                
+                //loop ate aqui
+                
+                //servidor.adeus();
           
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
         }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
     }
     
     protected class Sair implements ActionListener
