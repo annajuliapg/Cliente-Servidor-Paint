@@ -9,16 +9,16 @@ public class Desenho extends Comunicado
     private String idCliente;
     private String nomeDesenho;
     private String dataCriacao;
-    private String dataUltimaAtualizacao;
+    private String dataModificacao;
     private ArrayList<String> figuras;
     
-    public Desenho (String nomeDesenho, String dataCriacao, String dataUltimaAtualizacao) throws UnknownHostException
+    public Desenho (String nomeDesenho, String dataCriacao, String dataModificacao) throws UnknownHostException
     {
         this.idCliente = InetAddress.getLocalHost().getHostAddress();
         
         this.nomeDesenho = nomeDesenho;
         this.dataCriacao = dataCriacao;
-        this.dataUltimaAtualizacao = dataUltimaAtualizacao;
+        this.dataModificacao = dataModificacao;
         this.figuras = new ArrayList<String>();
     }
     
@@ -57,9 +57,9 @@ public class Desenho extends Comunicado
         return this.dataCriacao;
     }
     
-    public String getDataUltimaAtualizacao ()
+    public String getDataModificacao ()
     {
-        return this.dataUltimaAtualizacao;
+        return this.dataModificacao;
     }
    
     public String toString ()
@@ -67,7 +67,7 @@ public class Desenho extends Comunicado
         return ("Ip do Cliente: "+this.idCliente+"\n"+
                 "Nome do Desenho: "+this.nomeDesenho+"\n"+
                 "Data da Criação: "+this.dataCriacao+"\n"+
-                "Data da Última Atualização: "+this.dataUltimaAtualizacao+"\n"+
+                "Data da Modificação: "+this.dataModificacao+"\n"+
                 "Figuras: "+this.figuras);
     }
 
