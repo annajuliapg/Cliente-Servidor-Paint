@@ -1530,8 +1530,10 @@ public class Janela extends JFrame
                     Date data = new Date();
 
                     String dataString = java.text.DateFormat.getDateInstance(DateFormat.MEDIUM).format(data);
+                    
+                    String ipString = InetAddress.getLocalHost().getHostAddress();
 
-                    Desenho d = new Desenho (nomeDesenho, dataString, dataString);               
+                    Desenho d = new Desenho (nomeDesenho, ipString, dataString, dataString);            
 
                     for (Figura f : this.figuras)
                         d.addFigura (f.toString());

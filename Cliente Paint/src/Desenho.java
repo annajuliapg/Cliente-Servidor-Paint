@@ -12,10 +12,9 @@ public class Desenho extends Comunicado
     private String dataModificacao;
     private ArrayList<String> figuras;
     
-    public Desenho (String nomeDesenho, String dataCriacao, String dataModificacao) throws UnknownHostException
+    public Desenho (String nomeDesenho, String idCliente, String dataCriacao, String dataModificacao) throws UnknownHostException
     {
-        this.idCliente = InetAddress.getLocalHost().getHostAddress();
-        
+        this.idCliente = idCliente;        
         this.nomeDesenho = nomeDesenho;
         this.dataCriacao = dataCriacao;
         this.dataModificacao = dataModificacao;
@@ -64,8 +63,8 @@ public class Desenho extends Comunicado
    
     public String toString ()
     {
-        return ("Ip do Cliente: "+this.idCliente+"\n"+
-                "Nome do Desenho: "+this.nomeDesenho+"\n"+
+        return ("Nome do Desenho: "+this.nomeDesenho+"\n"+
+                "Ip do Cliente: "+this.idCliente+"\n"+
                 "Data da Criação: "+this.dataCriacao+"\n"+
                 "Data da Modificação: "+this.dataModificacao+"\n"+
                 "Figuras: "+this.figuras);
