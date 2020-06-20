@@ -1,3 +1,5 @@
+package Comunica;
+
 import java.util.*;
 
 //DAO - tabela inteira

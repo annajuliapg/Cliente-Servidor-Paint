@@ -1,3 +1,6 @@
+import Comunica.ComunicadoDeDesligamento;
+import Comunica.Parceiro;
+import Comunica.AceitadoraDeConexao;
 import java.util.*;
 
 public class Servidor

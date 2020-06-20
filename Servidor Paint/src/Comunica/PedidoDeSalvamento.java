@@ -1,3 +1,5 @@
+package Comunica;
+
 public class PedidoDeSalvamento extends Comunicado
 {
     private Desenho desenho;

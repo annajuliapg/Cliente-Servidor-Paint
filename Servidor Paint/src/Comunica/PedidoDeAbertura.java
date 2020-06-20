@@ -1,3 +1,5 @@
+package Comunica;
+
 public class PedidoDeAbertura extends Comunicado
 {    
     private double idCliente; //pode ser o ip
