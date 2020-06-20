@@ -1,5 +1,7 @@
 package Comunica;
 
+import BancoDeDados.RegistroDesenho;
+import BancoDeDados.RegistroDesenhos;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -87,29 +89,33 @@ public class SupervisoraDeConexao extends Thread
                     
                     pedidoDeSalvamento.getDesenho();
                     
-                    System.out.println(pedidoDeSalvamento.toString());                    
-					
-                    /*
-                    pegar do comunicado o vetor, nome do desenho, nome do cliente
-                    e mandar pro BD usando DAO e DBO
-                    enquanto isso, print o vetor na tela
+                    System.out.println(pedidoDeSalvamento.toString());
                     
-                    depois desconectar o usuario
-                    */
-
-                    //data criação, ultima atualização
-                    //nome do usuario, nome do desenho
+                    try
+                    {
+                    
+                    RegistroDesenhos.incluir(new RegistroDesenho (pedidoDeSalvamento.getNomeDesenho(),
+                                                                  pedidoDeSalvamento.getIdCliente(),          
+                                                                  pedidoDeSalvamento.getDataCriacao(),
+                                                                  pedidoDeSalvamento.getDataModificacao()));
+                    
+                        System.out.println("\n\nDEU CERTO");
+                    
+                    }
+                    catch (Exception erro)
+                    {
+                                    erro.printStackTrace();
+                        System.out.println (erro.getMessage());
+                    }
+                    
+                    //Formas.incluir(new Forma ())
+                    
+					
+                    
                 }
                 else if (comunicado instanceof PedidoDeAbertura)
                 {
-                    /*
-                    pegar do comunicado o nome do desenho e nome do cliente
-                    usar DAO e DBO para obter os dados
-                    preencher um objeto do tipo desenho
-                    e enviar pro cliente fazendo usuario.receba(desenho)
                     
-                    depois desconectar o usuario
-                    */
                 }
             }
         }

@@ -1,14 +1,14 @@
-package Comunica;
+package BancoDeDados;
 
-import java.util.*;
+// DBO - Colunas da tabela
 
-public class Desenho extends Comunicado
+public class RegistroDesenho 
 {
     private String nomeDesenho;
     private String idCliente;
     private String dataCriacao;
     private String dataModificacao;
-    private ArrayList<String> figuras;
+    private int    idDesenho;
     
     public void setNomeDesenho(String nomeDesenho) throws Exception
     {
@@ -42,6 +42,14 @@ public class Desenho extends Comunicado
         this.dataModificacao = dataModificacao;
     }
     
+    public void setIdDesenho(int idDesenho) throws Exception
+    {
+        if (idDesenho <= 0)
+            throw new Exception ("Id inválido");
+        
+        this.idDesenho = idDesenho;
+    }
+    
     public String getNomeDesenho ()
     {
         return this.nomeDesenho;
@@ -62,38 +70,31 @@ public class Desenho extends Comunicado
         return this.dataModificacao;
     }
     
-    public Desenho (String nomeDesenho, String idCliente, String dataCriacao, String dataModificacao) throws Exception
+    public int getIdDesenho ()
+    {
+        return this.idDesenho;
+    } 
+    
+    public RegistroDesenho (String nomeDesenho, String idCliente, String dataCriacao, String dataModificacao) throws Exception
     {
         this.setNomeDesenho (nomeDesenho);
         this.setIdCliente (idCliente);
         this.setDataCriacao (dataCriacao);
         this.setDataModificacao (dataModificacao);
-        
-        this.figuras = new ArrayList<String>();
     }
     
-    public void addFigura (String fig)
-    {
-        figuras.add(fig);
-    }
-    
-    public String getFigura (int i)
-    {
-        return figuras.get(i);
-    }
-    
-    public int getQtdFiguras ()
-    {
-        return figuras.size();
-    }
-    
+    @Override
     public String toString ()
     {
-        return ("Nome do Desenho: "+this.nomeDesenho+"\n"+
-                "Ip do Cliente: "+this.idCliente+"\n"+
-                "Data da Criação: "+this.dataCriacao+"\n"+
-                "Data da Modificação: "+this.dataModificacao+"\n"+
-                "Figuras: "+this.figuras);
-    }
+        String ret="";
 
+        ret+="Nome Desenho: "+this.nomeDesenho + "\n";
+        ret+="Id Cliente: "+this.idCliente + "\n";
+        ret+="Data Criação: "+this.dataCriacao + "\n";
+        ret+="Data Modificação: "+this.dataModificacao;
+        ret+="Id Desenho: "+this.idDesenho;
+        
+        return ret;
+    }
+    
 }
