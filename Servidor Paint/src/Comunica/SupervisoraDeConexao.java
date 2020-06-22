@@ -1,14 +1,13 @@
 package Comunica;
 
-import BancoDeDados.RegistroDesenho;
-import BancoDeDados.RegistroDesenhos;
+import BancoDeDados.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import javax.swing.JOptionPane;
 
 public class SupervisoraDeConexao extends Thread
 {
-    private double              valor=0;
     private Parceiro            usuario;
     private Socket              conexao;
     private ArrayList<Parceiro> usuarios;
@@ -83,24 +82,21 @@ public class SupervisoraDeConexao extends Thread
 
                 if (comunicado==null)
                     return;
+                
                 else if (comunicado instanceof PedidoDeSalvamento)
                 {
                     PedidoDeSalvamento pedidoDeSalvamento = (PedidoDeSalvamento)comunicado;
-                    
-                    pedidoDeSalvamento.getDesenho();
                     
                     System.out.println(pedidoDeSalvamento.toString());
                     
                     try
                     {
                     
-                    RegistroDesenhos.incluir(new RegistroDesenho (pedidoDeSalvamento.getNomeDesenho(),
-                                                                  pedidoDeSalvamento.getIdCliente(),          
-                                                                  pedidoDeSalvamento.getDataCriacao(),
-                                                                  pedidoDeSalvamento.getDataModificacao()));
-                    
-                        System.out.println("\n\nDEU CERTO");
-                    
+                        RegistroDesenhos.incluir(new RegistroDesenho(pedidoDeSalvamento.getNomeDesenho(),
+                                                                     pedidoDeSalvamento.getIdCliente(),          
+                                                                     pedidoDeSalvamento.getDataCriacao(),
+                                                                     pedidoDeSalvamento.getDataModificacao()));                        
+                                          
                     }
                     catch (Exception erro)
                     {
@@ -110,7 +106,7 @@ public class SupervisoraDeConexao extends Thread
                     
                     //Formas.incluir(new Forma ())
                     
-					
+                    this.usuario.adeus();
                     
                 }
                 else if (comunicado instanceof PedidoDeAbertura)

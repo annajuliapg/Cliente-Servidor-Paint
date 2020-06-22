@@ -16,11 +16,11 @@ public class Formas
                   "FROM Formas " +
                   "WHERE idDesenho = ?";
 
-            BDOracle.COMANDO.prepareStatement (sql);
+            BDSQLServer.COMANDO.prepareStatement (sql);
 
-            BDOracle.COMANDO.setInt (1, idDesenho);
+            BDSQLServer.COMANDO.setInt (1, idDesenho);
 
-            MeuResultSet resultado = (MeuResultSet)BDOracle.COMANDO.executeQuery ();
+            MeuResultSet resultado = (MeuResultSet)BDSQLServer.COMANDO.executeQuery ();
 
             retorno = resultado.first();
         }
@@ -47,17 +47,17 @@ public class Formas
                   "VALUES " +
                   "(?,?)";
 
-            BDOracle.COMANDO.prepareStatement (sql);
+            BDSQLServer.COMANDO.prepareStatement (sql);
 
-            BDOracle.COMANDO.setInt (1, forma.getIdDesenho());
-            BDOracle.COMANDO.setString (2, forma.getFigura());
+            BDSQLServer.COMANDO.setInt (1, forma.getIdDesenho());
+            BDSQLServer.COMANDO.setString (2, forma.getFigura());
 
-            BDOracle.COMANDO.executeUpdate ();
-            BDOracle.COMANDO.commit        ();
+            BDSQLServer.COMANDO.executeUpdate ();
+            BDSQLServer.COMANDO.commit        ();
         }
         catch (SQLException erro)
         {
-            BDOracle.COMANDO.rollback();
+            BDSQLServer.COMANDO.rollback();
             throw new Exception ("Erro ao inserir forma");
         }
     }
@@ -74,16 +74,16 @@ public class Formas
             sql = "DELETE FROM Formas " +
                   "WHERE idDesenho=?";
 
-            BDOracle.COMANDO.prepareStatement (sql);
+            BDSQLServer.COMANDO.prepareStatement (sql);
 
-            BDOracle.COMANDO.setInt (1, idDesenho);
+            BDSQLServer.COMANDO.setInt (1, idDesenho);
 
-            BDOracle.COMANDO.executeUpdate ();
-            BDOracle.COMANDO.commit        ();        
+            BDSQLServer.COMANDO.executeUpdate ();
+            BDSQLServer.COMANDO.commit        ();        
         }
         catch (SQLException erro)
         {
-            BDOracle.COMANDO.rollback();
+            BDSQLServer.COMANDO.rollback();
             throw new Exception ("Erro ao excluir forma");
         }
     }
@@ -100,11 +100,11 @@ public class Formas
                   "FROM Formas " +
                   "WHERE idDesenho = ?";
 
-            BDOracle.COMANDO.prepareStatement (sql);
+            BDSQLServer.COMANDO.prepareStatement (sql);
 
-            BDOracle.COMANDO.setInt (1, idDesenho);
+            BDSQLServer.COMANDO.setInt (1, idDesenho);
 
-            MeuResultSet resultado = (MeuResultSet)BDOracle.COMANDO.executeQuery ();
+            MeuResultSet resultado = (MeuResultSet)BDSQLServer.COMANDO.executeQuery ();
 
             if (!resultado.first())
                 throw new Exception ("Nao cadastrado");
@@ -131,9 +131,9 @@ public class Formas
             sql = "SELECT * " +
                   "FROM Formas";
 
-            BDOracle.COMANDO.prepareStatement (sql);
+            BDSQLServer.COMANDO.prepareStatement (sql);
 
-            resultado = (MeuResultSet)BDOracle.COMANDO.executeQuery ();
+            resultado = (MeuResultSet)BDSQLServer.COMANDO.executeQuery ();
         }
         catch (SQLException erro)
         {

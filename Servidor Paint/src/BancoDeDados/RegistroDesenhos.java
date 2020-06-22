@@ -1,7 +1,5 @@
 package BancoDeDados;
 
-//DAO - tabela inteira
-
 import java.sql.*;
 
 public class RegistroDesenhos
@@ -18,11 +16,11 @@ public class RegistroDesenhos
                   "FROM RegistroDesenhos " +
                   "WHERE idDesenho = ?";
 
-            BDOracle.COMANDO.prepareStatement (sql);
+            BDSQLServer.COMANDO.prepareStatement (sql);
 
-            BDOracle.COMANDO.setInt (1, idDesenho);
+            BDSQLServer.COMANDO.setInt (1, idDesenho);
 
-            MeuResultSet resultado = (MeuResultSet)BDOracle.COMANDO.executeQuery ();
+            MeuResultSet resultado = (MeuResultSet)BDSQLServer.COMANDO.executeQuery ();
 
             retorno = resultado.first();
         }
@@ -46,24 +44,23 @@ public class RegistroDesenhos
             String sql;
 
             sql = "INSERT INTO RegistroDesenhos " +
-                  "(nomeDesenho, idCliente, dataCricao, dataModificacao, idCliente) " +
+                  "(nomeDesenho, idCliente, dataCricao, dataModificacao) " +
                   "VALUES " +
-                  "(?,?,?,?,?)";
+                  "(?,?,?,?)";
 
-            BDOracle.COMANDO.prepareStatement (sql);
+            BDSQLServer.COMANDO.prepareStatement (sql);
 
-            BDOracle.COMANDO.setString (1, registroDesenho.getNomeDesenho());
-            BDOracle.COMANDO.setString (2, registroDesenho.getIdCliente());
-            BDOracle.COMANDO.setString (3, registroDesenho.getDataCriacao());
-            BDOracle.COMANDO.setString (4, registroDesenho.getDataModificacao());
-            BDOracle.COMANDO.setInt    (5, registroDesenho.getIdDesenho());
+            BDSQLServer.COMANDO.setString (1, registroDesenho.getNomeDesenho());
+            BDSQLServer.COMANDO.setString (2, registroDesenho.getIdCliente());
+            BDSQLServer.COMANDO.setString (3, registroDesenho.getDataCriacao());
+            BDSQLServer.COMANDO.setString (4, registroDesenho.getDataModificacao());
 
-            BDOracle.COMANDO.executeUpdate ();
-            BDOracle.COMANDO.commit        ();
+            BDSQLServer.COMANDO.executeUpdate ();
+            BDSQLServer.COMANDO.commit        ();
         }
         catch (SQLException erro)
         {
-            BDOracle.COMANDO.rollback();
+            BDSQLServer.COMANDO.rollback();
             throw new Exception ("Erro ao inserir desenho");
         }
     }
@@ -80,16 +77,16 @@ public class RegistroDesenhos
             sql = "DELETE FROM RegistroDesenhos " +
                   "WHERE idDesenho=?";
 
-            BDOracle.COMANDO.prepareStatement (sql);
+            BDSQLServer.COMANDO.prepareStatement (sql);
 
-            BDOracle.COMANDO.setInt (1, idDesenho);
+            BDSQLServer.COMANDO.setInt (1, idDesenho);
 
-            BDOracle.COMANDO.executeUpdate ();
-            BDOracle.COMANDO.commit        ();        
+            BDSQLServer.COMANDO.executeUpdate ();
+            BDSQLServer.COMANDO.commit        ();        
         }
         catch (SQLException erro)
         {
-            BDOracle.COMANDO.rollback();
+            BDSQLServer.COMANDO.rollback();
             throw new Exception ("Erro ao excluir desenho");
         }
     }
@@ -110,19 +107,19 @@ public class RegistroDesenhos
                   "SET dataModificacao=? " +
                   "WHERE idDesenho = ?";
 
-            BDOracle.COMANDO.prepareStatement (sql);
+            BDSQLServer.COMANDO.prepareStatement (sql);
             
             //obs - possivel erro
             
-            BDOracle.COMANDO.setString (1, registroDesenho.getDataModificacao());
-            BDOracle.COMANDO.setInt    (2, registroDesenho.getIdDesenho());
+            BDSQLServer.COMANDO.setString (1, registroDesenho.getDataModificacao());
+            BDSQLServer.COMANDO.setInt    (2, registroDesenho.getIdDesenho());
 
-            BDOracle.COMANDO.executeUpdate ();
-            BDOracle.COMANDO.commit        ();
+            BDSQLServer.COMANDO.executeUpdate ();
+            BDSQLServer.COMANDO.commit        ();
         }
         catch (SQLException erro)
         {
-            BDOracle.COMANDO.rollback();
+            BDSQLServer.COMANDO.rollback();
             throw new Exception ("Erro ao atualizar dados do desenho");
         }
     }
@@ -141,11 +138,11 @@ public class RegistroDesenhos
                   "FROM RegistroDesenhos " +
                   "WHERE idDesenho = ?";
 
-            BDOracle.COMANDO.prepareStatement (sql);
+            BDSQLServer.COMANDO.prepareStatement (sql);
 
-            BDOracle.COMANDO.setInt (1, idDesenho);
+            BDSQLServer.COMANDO.setInt (1, idDesenho);
 
-            MeuResultSet resultado = (MeuResultSet)BDOracle.COMANDO.executeQuery ();
+            MeuResultSet resultado = (MeuResultSet)BDSQLServer.COMANDO.executeQuery ();
 
             if (!resultado.first())
                 throw new Exception ("Nao cadastrado");
@@ -174,9 +171,9 @@ public class RegistroDesenhos
             sql = "SELECT * " +
                   "FROM RegistroDesenhos";
 
-            BDOracle.COMANDO.prepareStatement (sql);
+            BDSQLServer.COMANDO.prepareStatement (sql);
 
-            resultado = (MeuResultSet)BDOracle.COMANDO.executeQuery ();
+            resultado = (MeuResultSet)BDSQLServer.COMANDO.executeQuery ();
         }
         catch (SQLException erro)
         {

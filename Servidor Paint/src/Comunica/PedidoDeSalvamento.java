@@ -38,6 +38,16 @@ public class PedidoDeSalvamento extends Comunicado
     {
         return this.desenho.getDataModificacao();
     }
+    
+    public String getFigura (int i)
+    {
+        return desenho.getFigura(i);
+    }
+    
+    public int getQtdFiguras ()
+    {
+        return desenho.getQtdFiguras();
+    }
    
     public String toString ()
     {
