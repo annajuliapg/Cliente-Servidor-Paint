@@ -44,7 +44,7 @@ public class RegistroDesenhos
             String sql;
 
             sql = "INSERT INTO RegistroDesenhos " +
-                  "(nomeDesenho, idCliente, dataCricao, dataModificacao) " +
+                  "(nomeDesenho, idCliente, dataCriacao, dataModificacao) " +
                   "VALUES " +
                   "(?,?,?,?)";
 
@@ -181,5 +181,32 @@ public class RegistroDesenhos
         }
 
         return resultado;
+    }
+    
+    public static int idAtual () throws Exception
+    {
+        int idAtual;
+        
+        try
+        {
+            String sql;
+
+            sql = "SELECT idDesenho " +
+                  "FROM RegistroDesenhos ";
+
+            BDSQLServer.COMANDO.prepareStatement (sql);
+
+            MeuResultSet resultado = (MeuResultSet)BDSQLServer.COMANDO.executeQuery ();
+
+            resultado.last();
+            
+            idAtual = resultado.getInt(1);
+        }
+        catch (SQLException erro)
+        {
+            throw new Exception ("Erro ao procurar id");
+        }
+        
+        return idAtual;
     }
 }

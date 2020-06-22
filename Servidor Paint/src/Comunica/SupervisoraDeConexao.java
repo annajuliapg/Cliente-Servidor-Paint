@@ -95,7 +95,16 @@ public class SupervisoraDeConexao extends Thread
                         RegistroDesenhos.incluir(new RegistroDesenho(pedidoDeSalvamento.getNomeDesenho(),
                                                                      pedidoDeSalvamento.getIdCliente(),          
                                                                      pedidoDeSalvamento.getDataCriacao(),
-                                                                     pedidoDeSalvamento.getDataModificacao()));                        
+                                                                     pedidoDeSalvamento.getDataModificacao()));   
+                        
+                        System.out.println("Linha inserida!");
+                        
+                        int idAtual = RegistroDesenhos.idAtual();
+                        
+                        for(int i = 0; i<pedidoDeSalvamento.getQtdFiguras(); i++)
+                            Formas.incluir(new Forma (idAtual, pedidoDeSalvamento.getFigura(i)));
+                        
+                        System.out.println("Linhas inseridas!");
                                           
                     }
                     catch (Exception erro)
@@ -103,8 +112,6 @@ public class SupervisoraDeConexao extends Thread
                                     erro.printStackTrace();
                         System.out.println (erro.getMessage());
                     }
-                    
-                    //Formas.incluir(new Forma ())
                     
                     this.usuario.adeus();
                     
