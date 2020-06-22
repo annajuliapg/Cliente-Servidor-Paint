@@ -1,3 +1,4 @@
+import Comunica.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -1538,7 +1539,10 @@ public class Janela extends JFrame
                     for (Figura f : this.figuras)
                         d.addFigura (f.toString());
 
-                    servidor.receba(d);
+                    servidor.receba(new PedidoDeSalvamento(d));                
+                    
+                    
+                    
                     servidor.adeus();
 
                     JOptionPane.showMessageDialog (null,
@@ -1546,7 +1550,7 @@ public class Janela extends JFrame
                                                    "Salvo",
                                                    JOptionPane.INFORMATION_MESSAGE);
 
-                    System.out.println(d.toString()+"\n");
+                    //System.out.println(d.toString()+"\n");
 
                }
                catch (Exception e)

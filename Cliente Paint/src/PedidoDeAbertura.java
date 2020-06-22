@@ -1,14 +1,7 @@
+package Comunica;
+
 public class PedidoDeAbertura extends Comunicado
-{
-    /*
-    nome desenho
-    nome do cliente
-    datas de criação e ultima atualização
-    
-    fazer setters e getters
-    
-    */
-    
+{    
     private double idCliente; //pode ser o ip
     private String nomeDesenho;
     
