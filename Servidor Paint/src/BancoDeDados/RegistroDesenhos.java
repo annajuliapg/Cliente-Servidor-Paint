@@ -91,28 +91,53 @@ public class RegistroDesenhos
         }
     }
 
-    public static void alterar (RegistroDesenho registroDesenho) throws Exception
+    public static int getIdExistente (String nomeDesenho, String idCliente) throws Exception
     {
-        if (registroDesenho==null)
-            throw new Exception ("Registro de Desenho não fornecido");
-
-        if (!cadastrado (registroDesenho.getIdDesenho()))
-            throw new Exception ("Nao cadastrado");
-
+        int id;
+        
         try
         {
             String sql;
 
+            sql = "SELECT idDesenho " +
+                  "FROM RegistroDesenhos " +
+                  "WHERE nomeDesenho = ? AND idCliente = ?";
+
+            BDSQLServer.COMANDO.prepareStatement (sql);
+
+            BDSQLServer.COMANDO.setString (1, nomeDesenho);
+            BDSQLServer.COMANDO.setString (2, idCliente);
+
+            MeuResultSet resultado = (MeuResultSet)BDSQLServer.COMANDO.executeQuery ();
+
+            resultado.first();
+            
+            id = resultado.getInt ("idDesenho");
+        }
+        catch (SQLException erro)
+        {
+            throw new Exception ("Erro ao procurar id");
+        }
+        
+        return id;
+    }
+    
+    public static void alterar (String dataModificacao, int idDesenho) throws Exception
+    {
+         try
+        {
+            String sql;
+
             sql = "UPDATE RegistroDesenhos " +
-                  "SET dataModificacao=? " +
+                  "SET dataModificacao = ? " +
                   "WHERE idDesenho = ?";
 
             BDSQLServer.COMANDO.prepareStatement (sql);
             
             //obs - possivel erro
             
-            BDSQLServer.COMANDO.setString (1, registroDesenho.getDataModificacao());
-            BDSQLServer.COMANDO.setInt    (2, registroDesenho.getIdDesenho());
+            BDSQLServer.COMANDO.setString (1, dataModificacao);
+            BDSQLServer.COMANDO.setInt    (2, idDesenho);
 
             BDSQLServer.COMANDO.executeUpdate ();
             BDSQLServer.COMANDO.commit        ();
@@ -130,8 +155,6 @@ public class RegistroDesenhos
 
         try
         {
-            //POSSIVEL ERRO - ID
-            
             String sql;
 
             sql = "SELECT * " +
@@ -208,5 +231,30 @@ public class RegistroDesenhos
         }
         
         return idAtual;
+    }
+    
+    public static boolean verificaNome (String nomeDesenho, String idCliente) throws Exception
+    {
+        try
+        {
+            String sql;
+
+            sql = "SELECT * " +
+                  "FROM RegistroDesenhos " +
+                  "WHERE nomeDesenho = ? AND idCliente = ?";
+
+            BDSQLServer.COMANDO.prepareStatement (sql);
+
+            BDSQLServer.COMANDO.setString (1, nomeDesenho);
+            BDSQLServer.COMANDO.setString (2, idCliente);
+
+            MeuResultSet resultado = (MeuResultSet)BDSQLServer.COMANDO.executeQuery ();
+
+            return resultado.first();  
+        }
+        catch (SQLException erro)
+        {
+            throw new Exception ("Erro ao procurar desenho");
+        }
     }
 }

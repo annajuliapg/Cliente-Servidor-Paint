@@ -87,29 +87,49 @@ public class SupervisoraDeConexao extends Thread
                 {
                     PedidoDeSalvamento pedidoDeSalvamento = (PedidoDeSalvamento)comunicado;
                     
-                    System.out.println(pedidoDeSalvamento.toString());
+                    System.out.println("\n" + pedidoDeSalvamento.toString());
                     
                     try
                     {
-                    
-                        RegistroDesenhos.incluir(new RegistroDesenho(pedidoDeSalvamento.getNomeDesenho(),
-                                                                     pedidoDeSalvamento.getIdCliente(),          
-                                                                     pedidoDeSalvamento.getDataCriacao(),
-                                                                     pedidoDeSalvamento.getDataModificacao()));   
+                        boolean verificaDesenho;
                         
-                        System.out.println("Linha inserida!");
+                        verificaDesenho = RegistroDesenhos.verificaNome(pedidoDeSalvamento.getNomeDesenho(), 
+                                                                        pedidoDeSalvamento.getIdCliente());
                         
-                        int idAtual = RegistroDesenhos.idAtual();
+                        if(!verificaDesenho) //não existe desenho com esse nome desse cliente
+                        {
+                            RegistroDesenhos.incluir(new RegistroDesenho(pedidoDeSalvamento.getNomeDesenho(),
+                                                                        pedidoDeSalvamento.getIdCliente(),          
+                                                                        pedidoDeSalvamento.getDataCriacao(),
+                                                                        pedidoDeSalvamento.getDataModificacao()));   
                         
-                        for(int i = 0; i<pedidoDeSalvamento.getQtdFiguras(); i++)
-                            Formas.incluir(new Forma (idAtual, pedidoDeSalvamento.getFigura(i)));
+                            System.out.println("Linha inserida!");
+
+                            int idAtual = RegistroDesenhos.idAtual();
+
+                            for(int i = 0; i<pedidoDeSalvamento.getQtdFiguras(); i++)
+                                Formas.incluir(new Forma (idAtual, pedidoDeSalvamento.getFigura(i)));
+
+                            System.out.println("Linhas inseridas!");  
+                        }
+                        else //existe um desenho com esse nome desse cliente
+                        {
+                            int id = RegistroDesenhos.getIdExistente(pedidoDeSalvamento.getNomeDesenho(), 
+                                                                     pedidoDeSalvamento.getIdCliente());
+                            
+                            RegistroDesenhos.alterar(pedidoDeSalvamento.getDataModificacao(), id);
+                            
+                            Formas.excluir(id);
+                            
+                            for(int i = 0; i<pedidoDeSalvamento.getQtdFiguras(); i++)
+                                Formas.incluir(new Forma (id, pedidoDeSalvamento.getFigura(i)));
+                        }                      
                         
-                        System.out.println("Linhas inseridas!");
                                           
                     }
                     catch (Exception erro)
                     {
-                                    erro.printStackTrace();
+                        erro.printStackTrace();
                         System.out.println (erro.getMessage());
                     }
                     

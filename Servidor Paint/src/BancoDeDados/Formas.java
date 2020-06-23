@@ -43,7 +43,7 @@ public class Formas
             String sql;
 
             sql = "INSERT INTO Formas " +
-                  "(idCliente, figura) " +
+                  "(idDesenho, figura) " +
                   "VALUES " +
                   "(?,?)";
 

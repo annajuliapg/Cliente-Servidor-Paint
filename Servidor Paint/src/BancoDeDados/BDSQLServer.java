@@ -1,7 +1,5 @@
 package BancoDeDados;
 
-import java.sql.SQLException;
-
 public class BDSQLServer
 {
     public static final MeuPreparedStatement COMANDO;
@@ -22,15 +20,9 @@ public class BDSQLServer
             
             System.out.println("Banco de Dados Conectado!");
         }
-        catch (ClassNotFoundException erro)
+        catch (Exception erro)
         {
-            System.err.println ("Problemas de conexao com o BD CLASSE");
-            System.exit(0); // aborta o programa
-        }
-        catch (SQLException erro)
-        {
-            System.err.println ("Problemas de conexao com o BD SQL");
-            System.out.println(erro.getErrorCode());
+            System.err.println ("Problemas de conexao com o BD");
             System.exit(0); // aborta o programa
         }
         
