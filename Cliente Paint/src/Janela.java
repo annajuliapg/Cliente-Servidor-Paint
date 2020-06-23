@@ -1512,7 +1512,7 @@ public class Janela extends JFrame
                 return;
             }
 
-            Parceiro servidor = null ;
+            Parceiro servidor = null;
             try
             {
                 servidor = new Parceiro (conexao, receptor, transmissor);
@@ -1526,32 +1526,41 @@ public class Janela extends JFrame
 
                try
                {    
-                    String nomeDesenho = JOptionPane.showInputDialog(null, "Nome:", "Digite o nome do desenho", JOptionPane.PLAIN_MESSAGE);
+                    String nomeDesenho = "";
+                            
+                    nomeDesenho = JOptionPane.showInputDialog(null, "Nome:", "Digite o nome do desenho", JOptionPane.PLAIN_MESSAGE);
 
-                    Date data = new Date();
+                    if("".equals(nomeDesenho))
+                    {
+                        servidor.adeus();
+                        
+                        JOptionPane.showMessageDialog (null,
+                                                       "Você precisa inserir um nome para seu desenho",
+                                                       "Não Salvo",
+                                                       JOptionPane.INFORMATION_MESSAGE); 
+                    }
+                    else
+                    {
+                        String dataString;
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm"); 
+                        dataString = sdf.format(new Date());
 
-                    String dataString = java.text.DateFormat.getDateInstance(DateFormat.MEDIUM).format(data);
-                    
-                    String ipString = InetAddress.getLocalHost().getHostAddress();
+                        String ipString = InetAddress.getLocalHost().getHostAddress();
 
-                    Desenho d = new Desenho (nomeDesenho, ipString, dataString, dataString);            
+                        Desenho d = new Desenho (nomeDesenho, ipString, dataString, dataString);            
 
-                    for (Figura f : this.figuras)
-                        d.addFigura (f.toString());
+                        for (Figura f : this.figuras)
+                            d.addFigura (f.toString());
 
-                    servidor.receba(new PedidoDeSalvamento(d));                
-                    
-                    
-                    
-                    servidor.adeus();
+                        servidor.receba(new PedidoDeSalvamento(d));                
 
-                    JOptionPane.showMessageDialog (null,
-                                                   "Desenho salvo como: " + nomeDesenho,
-                                                   "Salvo",
-                                                   JOptionPane.INFORMATION_MESSAGE);
+                        servidor.adeus();
 
-                    //System.out.println(d.toString()+"\n");
-
+                        JOptionPane.showMessageDialog (null,
+                                                       "Desenho salvo como: " + nomeDesenho,
+                                                       "Salvo",
+                                                       JOptionPane.INFORMATION_MESSAGE); 
+                    }
                }
                catch (Exception e)
                {
