@@ -64,7 +64,7 @@ public class Janela extends JFrame
     
     protected Figura temp = null; // figura temporária para os desenhos contínuos
     
-    protected String stringTexto = null;
+    protected String stringTexto = "";
     protected Font fonteTexto = new Font ("Calibri", 0, 20);
     
     protected Vector<Figura> figuras = new Vector<Figura>();
@@ -752,11 +752,17 @@ public class Janela extends JFrame
                             esperaInicioTexto = false;
 
                             stringTexto = JOptionPane.showInputDialog(null, "Texto:", "Escrever", JOptionPane.PLAIN_MESSAGE);
-
-                            figuras.add (new Texto(p1.getX(), p1.getY(), stringTexto, corAtual, fonteTexto));
-                            figuras.get(figuras.size()-1).torneSeVisivel(pnlDesenho.getGraphics());
-
+                            
+                            int r = JOptionPane.CANCEL_OPTION;
+                            
+                            if((r != 2) || (!stringTexto.isEmpty()))
+                            {
+                              figuras.add (new Texto(p1.getX(), p1.getY(), stringTexto, corAtual, fonteTexto));
+                              figuras.get(figuras.size()-1).torneSeVisivel(pnlDesenho.getGraphics());  
+                            }                                                 
+                                
                             esperaInicioTexto = true;
+                            
                         }
                         catch (Exception x)
                         {
@@ -1468,7 +1474,7 @@ public class Janela extends JFrame
             {
                 Abrir();
             } 
-            catch (IOException ex) 
+            catch (Exception ex) 
             {
                 Logger.getLogger(Janela.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -1482,8 +1488,7 @@ public class Janela extends JFrame
         //fazer conexão do cliente
         
         try
-        {
-        
+        {       
             Socket conexao = new Socket ("localhost", 3000);
 
             ObjectOutputStream transmissor = null;
@@ -1525,42 +1530,46 @@ public class Janela extends JFrame
             //conexão feita
 
                try
-               {    
-                    String nomeDesenho = "";
-                            
-                    nomeDesenho = JOptionPane.showInputDialog(null, "Nome:", "Digite o nome do desenho", JOptionPane.PLAIN_MESSAGE);
+               {
+                    String nomeDesenho = JOptionPane.showInputDialog(null, "Nome:", "Digite o nome do desenho", JOptionPane.PLAIN_MESSAGE);
 
-                    if("".equals(nomeDesenho))
-                    {
-                        servidor.adeus();
-                        
-                        JOptionPane.showMessageDialog (null,
-                                                       "Você precisa inserir um nome para seu desenho",
-                                                       "Não Salvo",
-                                                       JOptionPane.INFORMATION_MESSAGE); 
+                    if(nomeDesenho != null)
+                    {                        
+                        if(nomeDesenho.isEmpty())
+                        {
+                            JOptionPane.showMessageDialog (null,
+                                                            "Você precisa inserir um nome para seu desenho",
+                                                            "Não Salvo",
+                                                            JOptionPane.INFORMATION_MESSAGE);   
+                        }
+                        else
+                        {
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm"); 
+                            String dataString = sdf.format(new Date());
+
+                            String ipString = InetAddress.getLocalHost().getHostAddress();
+
+                            Desenho d = new Desenho (nomeDesenho, ipString, dataString, dataString);            
+
+                            for (Figura f : this.figuras)
+                                d.addFigura (f.toString());
+
+                            System.out.println("Enviando Pedido de Salvamento...");
+
+                            servidor.receba(new PedidoDeSalvamento(d));                
+
+                            System.out.println("Pedido de Salvamento Recebido!");
+
+                            System.out.println("Desenho Salvo!");
+
+                            JOptionPane.showMessageDialog (null,
+                                                           "Desenho salvo como: " + nomeDesenho,
+                                                           "Salvo",
+                                                           JOptionPane.INFORMATION_MESSAGE);                          
+                        } 
                     }
-                    else
-                    {
-                        String dataString;
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm"); 
-                        dataString = sdf.format(new Date());
-
-                        String ipString = InetAddress.getLocalHost().getHostAddress();
-
-                        Desenho d = new Desenho (nomeDesenho, ipString, dataString, dataString);            
-
-                        for (Figura f : this.figuras)
-                            d.addFigura (f.toString());
-
-                        servidor.receba(new PedidoDeSalvamento(d));                
-
-                        servidor.adeus();
-
-                        JOptionPane.showMessageDialog (null,
-                                                       "Desenho salvo como: " + nomeDesenho,
-                                                       "Salvo",
-                                                       JOptionPane.INFORMATION_MESSAGE); 
-                    }
+                    
+                    servidor.adeus();                    
                }
                catch (Exception e)
                {
@@ -1576,112 +1585,164 @@ public class Janela extends JFrame
         }
     }
     
-    public void Abrir() throws IOException
+    public void Abrir() throws Exception
     {
        //fazer conxão do cliente
         
-       Socket conexao = new Socket ("localhost", 3000);
-        
-        ObjectOutputStream transmissor = null;
         try
         {
-           transmissor =
-            new ObjectOutputStream(
-            conexao.getOutputStream());
-        }
-        catch (Exception erro)
-        {
-            System.err.println ("Indique o servidor e a porta corretos!\n");
-            return;
-        }
+            Socket conexao = new Socket ("localhost", 3000);
 
-        ObjectInputStream receptor = null;
-        try
-        {
-            receptor =
-            new ObjectInputStream(
-            conexao.getInputStream());
-        }
-        catch (Exception erro)
-        {
-            System.err.println ("Indique o servidor e a porta corretos!\n");
-            return;
-        }
+            ObjectOutputStream transmissor = null;
+            try
+            {
+               transmissor =
+                new ObjectOutputStream(
+                conexao.getOutputStream());
+            }
+            catch (Exception erro)
+            {
+                System.err.println ("Indique o servidor e a porta corretos!\n");
+                return;
+            }
 
-        Parceiro servidor = null ;
-        try
-        {
-            servidor = new Parceiro (conexao, receptor, transmissor);
-        }
-        catch (Exception erro)
-        {
-            System.err.println ("Indique o servidor e a porta corretos!\n");
-            return;
-        }        
-        
-        //conexão feita
+            ObjectInputStream receptor = null;
+            try
+            {
+                receptor =
+                new ObjectInputStream(
+                conexao.getInputStream());
+            }
+            catch (Exception erro)
+            {
+                System.err.println ("Indique o servidor e a porta corretos!\n");
+                return;
+            }
+
+            Parceiro servidor = null ;
+            try
+            {
+                servidor = new Parceiro (conexao, receptor, transmissor);
+            }
+            catch (Exception erro)
+            {
+                System.err.println ("Indique o servidor e a porta corretos!\n");
+                return;
+            }        
+
+            //conexão feita
           
-        try
-        {
-            this.figuras.clear();
-            
-            repaint();
-            
-            //PedidoDeAbertura pda = new PedidoDeAbertura (nome do desenho, identificacao do cliente);
-            //servidor.receba (pda);
-            //Desenho d = (Desenho)servidor.envie();
-            
-                //fazer um loop - quant desenho
-                    //String s = d.pegaDesenho(i);
-                    String s = null;
+            try
+            {            
+                String nomeDesenho = "";
 
-                    switch (s.charAt(0))
+                nomeDesenho = JOptionPane.showInputDialog(null, "Nome:", "Digite o nome do desenho para abrir", JOptionPane.PLAIN_MESSAGE);
+                
+                if(nomeDesenho != null)
+                {
+                   if(nomeDesenho.isEmpty())
                     {
-                        case 'p': 
-                        this.figuras.add (new Ponto (s));
-                        break;
-
-                        case 'l': 
-                        this.figuras.add (new Linha (s));
-                        break;
-                        
-                        case 'c':
-                        this.figuras.add(new Circulo (s));
-                        break;
-                        
-                        case 'e':
-                        this.figuras.add(new Elipse (s));
-                        break;
-                        
-                        case 'q':
-                        this.figuras.add(new Quadrado (s));
-                        break;
-                        
-                        case 'r':
-                        this.figuras.add(new Retangulo (s));
-                        break;
-                        
-                        case 'g':
-                        this.figuras.add(new Poligono (s));
-                        break;
-                        
-                        case 't':
-                        this.figuras.add(new Texto (s));
-                        break;
+                        JOptionPane.showMessageDialog (null,
+                                                           "Você precisa inserir um nome para seu desenho",
+                                                           "Tente Novamente",
+                                                           JOptionPane.INFORMATION_MESSAGE); 
                     }
+                    else
+                    {
+                        String ipString = InetAddress.getLocalHost().getHostAddress();
+                        
+                        PedidoDeAbertura pda = new PedidoDeAbertura (nomeDesenho, ipString);
+                        System.out.println("Enviando Pedido de Abertura...");
+                        servidor.receba (pda);
+                        System.out.println("Pedido Recebido!");
 
-                    this.figuras.get (this.figuras.size()-1).torneSeVisivel(pnlDesenho.getGraphics());
-                
-                //loop ate aqui
-                
-                //servidor.adeus();
-          
+                        Comunicado comunicado = servidor.envie();
+
+                        if(comunicado instanceof PedidoDeAbertura)
+                        {
+                            System.out.println("Nome do Desenho ou Usuário incorreto");
+                            System.out.println("Tente novamente");
+
+                            JOptionPane.showMessageDialog (null,
+                                                    "Nome do Desenho ou Usuário incorreto",
+                                                    "Tente novamente",
+                                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                        else
+                        {
+                          Desenho d = (Desenho)comunicado;
+
+                          System.out.println("Desenhando...");
+
+                            if(!figuras.isEmpty())
+                            {
+                                this.figuras.clear();
+
+                                repaint(); 
+                            }
+
+                            //para pegar todas as figuras do desenho
+                            for(int i = 0; i < d.getQtdFiguras(); i++)
+                            {
+                               String s = d.getFigura(i);                    
+
+                                switch (s.charAt(0))
+                                {
+                                    case 'p': 
+                                    this.figuras.add (new Ponto (s));
+                                    break;
+
+                                    case 'l': 
+                                    this.figuras.add (new Linha (s));
+                                    break;
+
+                                    case 'c':
+                                    this.figuras.add(new Circulo (s));
+                                    break;
+
+                                    case 'e':
+                                    this.figuras.add(new Elipse (s));
+                                    break;
+
+                                    case 'q':
+                                    this.figuras.add(new Quadrado (s));
+                                    break;
+
+                                    case 'r':
+                                    this.figuras.add(new Retangulo (s));
+                                    break;
+
+                                    case 'g':
+                                    this.figuras.add(new Poligono (s));
+                                    break;
+
+                                    case 't':
+                                    this.figuras.add(new Texto (s));
+                                    break;
+                                }
+
+                                this.figuras.get (this.figuras.size()-1).torneSeVisivel(pnlDesenho.getGraphics());                
+                            }
+
+                                System.out.println("Desenho Pronto!");                  
+                        } 
+                    } 
+                }        
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            
+            servidor.adeus();
         }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        
+        catch(ConnectException e)
+        {           
+           JOptionPane.showMessageDialog (null,
+                                          "O servidor está desligado. Tente novamente mais tarde.",
+                                           "Servidor OFF",
+                                           JOptionPane.INFORMATION_MESSAGE);
+        }        
     }
     
     protected class Sair implements ActionListener

@@ -1,6 +1,5 @@
 package Comunica;
 
-import java.net.*;
 import java.util.*;
 
 public class Desenho extends Comunicado
@@ -87,14 +86,59 @@ public class Desenho extends Comunicado
     {
         return figuras.size();
     }
-    
-    public String toString ()
+
+    @Override
+    public String toString() 
     {
-        return ("Nome do Desenho: "+this.nomeDesenho+"\n"+
-                "Ip do Cliente: "+this.idCliente+"\n"+
-                "Data da Criação: "+this.dataCriacao+"\n"+
-                "Data da Modificação: "+this.dataModificacao+"\n"+
-                "Figuras: "+this.figuras);
+        return "Desenho{" + 
+                "nomeDesenho=" + nomeDesenho + "\n"+
+                "idCliente=" + idCliente + "\n"+
+                "dataCriacao=" + dataCriacao + "\n"+
+                "dataModificacao=" + dataModificacao + "\n"+
+                "figuras=" + figuras + '}';
+    }  
+    
+    @Override
+    public int hashCode() 
+    {
+        int hash = 3;
+        hash = 43 * hash + Objects.hashCode(this.nomeDesenho);
+        hash = 43 * hash + Objects.hashCode(this.idCliente);
+        hash = 43 * hash + Objects.hashCode(this.dataCriacao);
+        hash = 43 * hash + Objects.hashCode(this.dataModificacao);
+        hash = 43 * hash + Objects.hashCode(this.figuras);
+        return hash;
     }
 
+    @Override
+    public boolean equals(Object obj) 
+    {
+        if (this == obj)
+            return true;
+        
+        if (obj == null) 
+            return false;
+        
+        if (getClass() != obj.getClass()) 
+            return false;
+        
+        final Desenho other = (Desenho) obj;
+        
+        if (!Objects.equals(this.nomeDesenho, other.nomeDesenho)) 
+            return false;
+        
+        if (!Objects.equals(this.idCliente, other.idCliente)) 
+            return false;
+        
+        if (!Objects.equals(this.dataCriacao, other.dataCriacao)) 
+            return false;
+        
+        if (!Objects.equals(this.dataModificacao, other.dataModificacao)) 
+            return false;
+        
+        if (!Objects.equals(this.figuras, other.figuras)) 
+            return false;
+        
+        return true;
+    }
 }
