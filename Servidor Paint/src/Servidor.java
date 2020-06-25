@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Servidor
 {
-	public static String PORTA_PADRAO = "3000";
+    public static String PORTA_PADRAO = "3000";
 	
     public static void main (String[] args)
     {
@@ -18,8 +18,7 @@ public class Servidor
         if (args.length==1)
             porta = args[0];
 
-        ArrayList<Parceiro> usuarios =
-        new ArrayList<Parceiro> ();
+        ArrayList<Parceiro> usuarios = new ArrayList<Parceiro> ();
 
         AceitadoraDeConexao aceitadoraDeConexao=null;
         try
@@ -36,9 +35,7 @@ public class Servidor
 
         for(;;)
         {
-            System.out.println ("O servidor esta ativo! Para desativa-lo,");
-            System.out.println ("use o comando \"desativar\"\n");
-            System.out.print   ("> ");
+            System.out.println ("O servidor está ativo! Para desativá-lo, digite \"desativar\"\n");
 
             String comando=null;
             try
@@ -71,7 +68,10 @@ public class Servidor
                 System.exit(0);
             }
             else
-                System.err.println ("Comando invalido!\n");
+                System.err.println ("Comando inválido!\n");
         }
     }
+    
+    //não há atributo variável para toString    
+    
 }

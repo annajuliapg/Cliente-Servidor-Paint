@@ -1,5 +1,7 @@
 package BancoDeDados;
 
+import java.util.Objects;
+
 public class Forma 
 {
     private int    idDesenho;
@@ -46,5 +48,35 @@ public class Forma
         ret+="Id Figura: "+this.figura;
         
         return ret;
+    }
+
+    @Override
+    public int hashCode() 
+    {
+        int hash = 3;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) 
+    {
+        if (this == obj) 
+            return true;
+        
+        if (obj == null) 
+            return false;
+        
+        if (getClass() != obj.getClass()) 
+            return false;
+        
+        final Forma other = (Forma) obj;
+        
+        if (this.idDesenho != other.idDesenho) 
+            return false;
+        
+        if (!Objects.equals(this.figura, other.figura)) 
+            return false;
+        
+        return true;
     }
 }

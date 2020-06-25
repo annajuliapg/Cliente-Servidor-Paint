@@ -2,6 +2,10 @@ package BancoDeDados;
 
 // DBO - Colunas da tabela
 
+import java.util.Objects;
+import java.util.logging.Logger;
+
+
 public class RegistroDesenho 
 {
     private String nomeDesenho;
@@ -96,5 +100,53 @@ public class RegistroDesenho
         
         return ret;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        
+        if (obj == null) 
+            return false;
+        
+        if (getClass() != obj.getClass()) 
+            return false;
+        
+        final RegistroDesenho other = (RegistroDesenho) obj;
+        
+        if (this.idDesenho != other.idDesenho) 
+            return false;
+        
+        if (!Objects.equals(this.nomeDesenho, other.nomeDesenho)) 
+            return false;
+        
+        if (!Objects.equals(this.idCliente, other.idCliente)) 
+            return false;
+        
+        if (!Objects.equals(this.dataCriacao, other.dataCriacao)) 
+            return false;
+        
+        if (!Objects.equals(this.dataModificacao, other.dataModificacao)) 
+            return false;
+        
+        return true;
+    } 
+
+    @Override
+    public int hashCode() 
+    {
+        int hash = 5;
+        hash = 89 * hash + Objects.hashCode(this.nomeDesenho);
+        hash = 89 * hash + Objects.hashCode(this.idCliente);
+        hash = 89 * hash + Objects.hashCode(this.dataCriacao);
+        hash = 89 * hash + Objects.hashCode(this.dataModificacao);
+        hash = 89 * hash + this.idDesenho;
+        
+        return hash;
+    }
+    
+    
+    
+    
     
 }

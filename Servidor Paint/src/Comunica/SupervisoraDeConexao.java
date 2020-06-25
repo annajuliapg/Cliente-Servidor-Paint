@@ -4,7 +4,6 @@ import BancoDeDados.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import javax.swing.JOptionPane;
 
 public class SupervisoraDeConexao extends Thread
 {
@@ -78,6 +77,8 @@ public class SupervisoraDeConexao extends Thread
 
             for(;;)
             {
+                //System.out.println(toString());
+                
                 Comunicado comunicado = this.usuario.envie ();
 
                 if (comunicado==null)
@@ -87,7 +88,7 @@ public class SupervisoraDeConexao extends Thread
                 {
                     PedidoDeSalvamento pedidoDeSalvamento = (PedidoDeSalvamento)comunicado;
                     
-                    System.out.println("\n" + pedidoDeSalvamento.toString());
+                    System.out.println("\nPedido de Salvamento do Desenho:\n" + pedidoDeSalvamento.toString() + "\n");
                     
                     try
                     {
@@ -103,14 +104,14 @@ public class SupervisoraDeConexao extends Thread
                                                                         pedidoDeSalvamento.getDataCriacao(),
                                                                         pedidoDeSalvamento.getDataModificacao()));   
                         
-                            System.out.println("Linha inserida!");
+                            System.out.println("Linha de RegistroDesenho inserida!");
 
                             int idAtual = RegistroDesenhos.idAtual();
 
                             for(int i = 0; i<pedidoDeSalvamento.getQtdFiguras(); i++)
                                 Formas.incluir(new Forma (idAtual, pedidoDeSalvamento.getFigura(i)));
 
-                            System.out.println("Linhas inseridas!");  
+                            System.out.println("Linhas de Formas inseridas!");  
                         }
                         else //existe um desenho com esse nome desse cliente
                         {
@@ -119,13 +120,15 @@ public class SupervisoraDeConexao extends Thread
                             
                             RegistroDesenhos.alterar(pedidoDeSalvamento.getDataModificacao(), id);
                             
+                            System.out.println("Linha de RegistroDesenho alerada!");
+                            
                             Formas.excluir(id);
                             
                             for(int i = 0; i<pedidoDeSalvamento.getQtdFiguras(); i++)
                                 Formas.incluir(new Forma (id, pedidoDeSalvamento.getFigura(i)));
-                        }                      
-                        
-                                          
+                            
+                            System.out.println("Linhas de Formas alteradas!");
+                        }                    
                     }
                     catch (Exception erro)
                     {
@@ -138,6 +141,43 @@ public class SupervisoraDeConexao extends Thread
                 }
                 else if (comunicado instanceof PedidoDeAbertura)
                 {
+                    PedidoDeAbertura pedidoDeAbertura = (PedidoDeAbertura)comunicado;
+                    
+                    System.out.println("\nPedido de Abertura do Desenho:\n" + pedidoDeAbertura.toString() + "\n");
+                    
+                    boolean verificaDesenho = RegistroDesenhos.verificaNome(pedidoDeAbertura.getNomeDesenho(), 
+                                                                            pedidoDeAbertura.getIdCliente());
+                    
+                    if(verificaDesenho) //existe desenho com esse nome desse cliente
+                    {
+                        System.out.println("Enviando Desenho...");  
+                        
+                        int id = RegistroDesenhos.getIdExistente(pedidoDeAbertura.getNomeDesenho(), 
+                                                                 pedidoDeAbertura.getIdCliente());
+                        
+                        RegistroDesenho registroDesenho = RegistroDesenhos.getRegistroDesenho(id);
+                        
+                        Desenho d = new Desenho (registroDesenho.getNomeDesenho(),
+                                                 registroDesenho.getIdCliente(),
+                                                 registroDesenho.getDataCriacao(),
+                                                 registroDesenho.getDataModificacao());
+                        
+                        Formas.setFormasDesenho(id,d);                      
+                                
+                        this.usuario.receba(d);
+                        
+                        this.usuario.adeus();
+                        
+                        System.out.println("Enviado!");  
+                    }
+                    else
+                    {
+                        System.out.println("\nEsse desenho não existe!");
+                        
+                        this.usuario.receba(comunicado);
+                        
+                        this.usuario.adeus();
+                    }
                     
                 }
             }
@@ -155,4 +195,47 @@ public class SupervisoraDeConexao extends Thread
             return;
         }
     }
+    
+    @Override
+    public String toString() 
+    {
+        return "SupervisoraDeConexao{" + 
+                "usuario=" + usuario + 
+                ", conexao=" + conexao + 
+                ", usuarios=" + usuarios + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(this.usuario);
+        hash = 23 * hash + Objects.hashCode(this.conexao);
+        hash = 23 * hash + Objects.hashCode(this.usuarios);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) 
+    {
+        if (this == obj) 
+            return true;
+        
+        if (obj == null) 
+            return false;
+        
+        if (getClass() != obj.getClass()) 
+            return false;
+        
+        final SupervisoraDeConexao other = (SupervisoraDeConexao) obj;
+        if (!Objects.equals(this.usuario, other.usuario)) 
+            return false;
+        
+        if (!Objects.equals(this.conexao, other.conexao)) 
+            return false;
+        
+        if (!Objects.equals(this.usuarios, other.usuarios)) 
+            return false;
+        
+        return true;
+    }    
 }

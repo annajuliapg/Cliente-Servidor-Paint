@@ -1,5 +1,7 @@
 package Comunica;
 
+import java.util.Objects;
+
 public class PedidoDeSalvamento extends Comunicado
 {
     private Desenho desenho;
@@ -48,11 +50,38 @@ public class PedidoDeSalvamento extends Comunicado
     {
         return desenho.getQtdFiguras();
     }
-   
-    public String toString ()
+
+    @Override
+    public String toString() 
     {
-        return (this.desenho.toString());
+        return this.desenho.toString();
     }
-    
-    //add equals    
+
+    @Override
+    public int hashCode() 
+    {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.desenho);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) 
+    {
+        if (this == obj) 
+            return true;
+        
+        if (obj == null) 
+            return false;
+        
+        if (getClass() != obj.getClass()) 
+            return false;
+        
+        final PedidoDeSalvamento other = (PedidoDeSalvamento) obj;
+        
+        if (!Objects.equals(this.desenho, other.desenho)) 
+            return false;
+        
+        return true;
+    } 
 }

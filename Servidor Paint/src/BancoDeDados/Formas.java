@@ -1,37 +1,10 @@
 package BancoDeDados;
 
+import Comunica.Desenho;
 import java.sql.*;
 
 public class Formas 
 {
-    public static boolean cadastrado (int idDesenho) throws Exception
-    {
-        boolean retorno = false;
-
-        try
-        {
-            String sql;
-
-            sql = "SELECT * " +
-                  "FROM Formas " +
-                  "WHERE idDesenho = ?";
-
-            BDSQLServer.COMANDO.prepareStatement (sql);
-
-            BDSQLServer.COMANDO.setInt (1, idDesenho);
-
-            MeuResultSet resultado = (MeuResultSet)BDSQLServer.COMANDO.executeQuery ();
-
-            retorno = resultado.first();
-        }
-        catch (SQLException erro)
-        {
-            throw new Exception ("Erro ao procurar forma");
-        }
-
-        return retorno;
-    }
-
     public static void incluir (Forma forma) throws Exception
     {
         if (forma==null)
@@ -64,9 +37,6 @@ public class Formas
 
     public static void excluir (int idDesenho) throws Exception
     {
-        if (!cadastrado (idDesenho))
-            throw new Exception ("Nao cadastrado");
-
         try
         {
             String sql;
@@ -88,10 +58,8 @@ public class Formas
         }
     }
 
-    public static Forma getForma (int idDesenho) throws Exception
+    public static void setFormasDesenho (int idDesenho, Desenho d) throws Exception
     {
-        Forma forma = null;
-
         try
         {
             String sql;
@@ -108,38 +76,21 @@ public class Formas
 
             if (!resultado.first())
                 throw new Exception ("Nao cadastrado");
-
-            forma = new Forma (resultado.getInt ("idDesenho"),
-                               resultado.getString("figura"));
+            
+            resultado.first();
+            
+            while(!resultado.isAfterLast())
+            {
+                d.addFigura (resultado.getString(2));
+                resultado.next();
+            }                            
+            
         }
         catch (SQLException erro)
         {
             throw new Exception ("Erro ao procurar forma");
         }
-
-        return forma;
     }
-
-    public static MeuResultSet getFormas () throws Exception
-    {
-        MeuResultSet resultado = null;
-
-        try
-        {
-            String sql;
-
-            sql = "SELECT * " +
-                  "FROM Formas";
-
-            BDSQLServer.COMANDO.prepareStatement (sql);
-
-            resultado = (MeuResultSet)BDSQLServer.COMANDO.executeQuery ();
-        }
-        catch (SQLException erro)
-        {
-            throw new Exception ("Erro ao recuperar formas");
-        }
-        
-        return resultado;
-    }
+    
+    //NÃO tem atributos para fazer toString, equals e hashCode
 }

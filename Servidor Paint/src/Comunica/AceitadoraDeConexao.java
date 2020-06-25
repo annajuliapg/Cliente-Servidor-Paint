@@ -32,7 +32,7 @@ public class AceitadoraDeConexao extends Thread
     }
 
     public void run ()
-    {
+    {        
         for(;;)
         {
             Socket conexao=null;
