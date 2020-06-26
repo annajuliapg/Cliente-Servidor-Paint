@@ -753,13 +753,11 @@ public class Janela extends JFrame
 
                             stringTexto = JOptionPane.showInputDialog(null, "Texto:", "Escrever", JOptionPane.PLAIN_MESSAGE);
                             
-                            int r = JOptionPane.CANCEL_OPTION;
-                            
-                            if((r != 2) || (!stringTexto.isEmpty()))
+                            if((stringTexto != null) && (!stringTexto.isEmpty()))
                             {
                               figuras.add (new Texto(p1.getX(), p1.getY(), stringTexto, corAtual, fonteTexto));
                               figuras.get(figuras.size()-1).torneSeVisivel(pnlDesenho.getGraphics());  
-                            }                                                 
+                            }                             
                                 
                             esperaInicioTexto = true;
                             
@@ -1660,11 +1658,11 @@ public class Janela extends JFrame
 
                         if(comunicado instanceof PedidoDeAbertura)
                         {
-                            System.out.println("Nome do Desenho ou Usuário incorreto");
+                            System.out.println("Esse nome de desenho não existe");
                             System.out.println("Tente novamente");
 
                             JOptionPane.showMessageDialog (null,
-                                                    "Nome do Desenho ou Usuário incorreto",
+                                                    "Esse nome de desenho não existe",
                                                     "Tente novamente",
                                                     JOptionPane.INFORMATION_MESSAGE);
                         }
