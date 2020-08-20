@@ -16,7 +16,7 @@ public class BDSQLServer
             new MeuPreparedStatement (
             "com.microsoft.sqlserver.jdbc.SQLServerDriver",
             "jdbc:sqlserver://localhost:1433;databasename=master",
-            "sa", "Syst3mSyst3m");
+            "sa", ""); //inserir senha
             
             System.out.println("Banco de Dados Conectado!");
         }
