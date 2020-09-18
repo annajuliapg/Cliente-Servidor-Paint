@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.util.Objects;
 import javax.swing.JOptionPane;
 
 public abstract class Figura
