@@ -1,3 +1,3 @@
 # Cliente-Servidor-Paint
 
-Projeto Paint implementado com o salvamento de desenhos no Banco de Dados
+Projeto Paint com a função de salvar desenhos no Banco de Dados
